@@ -1,0 +1,92 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>
+function processWfHeaders(headersRaw)
+{
+	var headers = headersRaw.split("\n");
+	headers.sort();
+	var headersWf = [];
+	for (var i in headers)
+	{
+		var m = headers[i].match(/^X-Wf-1-(\d+)-1-(\d+): (\d+)\|(.*)\|/i);
+		if (m)
+		{
+			/*
+			* m:
+			* 1 - группа
+			* 2 - id в группе
+			* 3 - длинна данных
+			* 4 - данные
+			*/
+			headersWf.push([m[1], m[2], m[3], eval(m[4])]);
+		}
+	}
+	return headersWf;
+}
+
+function getNotificationURL(item) 
+{
+	var query = "";
+	for (var key in item) 
+	{
+		var value = item[key];
+		if (value) query += key + "=" + encodeURIComponent(value) + "&";
+	}
+
+	var notifyPageURL = chrome.extension.getURL("notify.html") + "?" + query;
+	return notifyPageURL;
+}
+
+chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo)
+{
+	chrome.browserAction.setBadgeText({'text': ''});
+});
+
+chrome.tabs.onUpdated.addListener(function(tabId, change, tab) 
+{
+	if (!(tab.url.match("chrome://") || tab.url.match("chrome-extension://") || tab.url.match("file://") || tab.url.match("about:"))) 
+	{
+		chrome.browserAction.setBadgeText({'text': '...'});
+		if (change.status == "complete") 
+		{
+			var xhr = new XMLHttpRequest();
+			xhr.open("HEAD", tab.url, true);
+			xhr.setRequestHeader("X-FirePHP", "0.4");
+			xhr.send();
+			xhr.onreadystatechange = function()
+			{
+				if (xhr.readyState == 4) 
+				{
+					if (xhr.getAllResponseHeaders()) 
+					{
+						var headers = xhr.getAllResponseHeaders();
+						var headersWf = processWfHeaders(headers);
+						if (headersWf.length) 
+						{
+							chrome.browserAction.setBadgeText({'text': headersWf.length.toString()});
+							var headersWfText = '';
+							for (var i in headersWf) 
+							{
+								var type = headersWf[i][3][0].Type;
+								headersWfText += "<div class='ico ico-"+type+"'>" + headersWf[i][3][1] + "</div>";
+							}
+							var notification = webkitNotifications.createHTMLNotification(getNotificationURL([tab.url, headersWfText]));
+							notification.show();
+							//setTimeout(function(){ notification.cancel() }, 10000);
+						}
+						else 
+						{
+							chrome.browserAction.setBadgeText({'text': ''});
+						}
+					}
+					else 
+					{
+						console.error("Can't get headers.");
+					}
+				}
+			}
+		}
+	}
+});
+
+// chrome.browserAction.setBadgeBackgroundColor({'color': [255, 0, 0, 255]});
+</script>
