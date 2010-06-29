@@ -72,7 +72,22 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab)
 							for (var i in headersWf) 
 							{
 								var type = headersWf[i][3][0].Type;
-								headersWfText += "<div class='ico ico-"+type+"'>" + headersWf[i][3][1] + "</div>";
+								var data = headersWf[i][3][1];
+								var text = '';
+								if (typeof(data) != 'object')
+								{
+									text = data;
+								}
+								else
+								{
+									text += '<pre>';
+									for (var ii in data)
+									{
+										text += "'"+ii+"' => '"+data[ii]+"'<br />";
+									}
+									text += '</pre>';
+								}
+								headersWfText += "<div class='ico ico-"+type+"'>" + text + "</div>";
 							}
 							var notification = webkitNotifications.createHTMLNotification(getNotificationURL([tab.url, headersWfText]));
 							notification.show();
