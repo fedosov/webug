@@ -5,6 +5,8 @@ www.micle.info
 -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>
+var isPoweredOn = true;
+
 function processWfHeaders(headersRaw)
 {
 	var headers = headersRaw.split("\n");
@@ -41,6 +43,19 @@ function getNotificationURL(item)
 	return notifyPageURL;
 }
 
+chrome.browserAction.onClicked.addListener(function(tab)
+{
+	isPoweredOn = !isPoweredOn;
+	if (isPoweredOn)
+	{
+		chrome.browserAction.setIcon({ path: "i/FirePHP_19.png" });
+	}
+	else
+	{
+		chrome.browserAction.setIcon({ path: "i/FirePHP_19_gray.png" });
+	}
+});
+
 chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo)
 {
 	chrome.browserAction.setBadgeText({'text': ''});
@@ -48,7 +63,7 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId, selectInfo)
 
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) 
 {
-	if (!(tab.url.match("chrome://") || tab.url.match("chrome-extension://") || tab.url.match("file://") || tab.url.match("about:"))) 
+	if (isPoweredOn && !(tab.url.match("chrome://") || tab.url.match("chrome-extension://") || tab.url.match("file://") || tab.url.match("about:"))) 
 	{
 		chrome.browserAction.setBadgeText({'text': '...'});
 		if (change.status == "complete") 

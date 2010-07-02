@@ -1,6 +1,6 @@
 {
 	"name": "Webug",
-	"version": "1.1",
+	"version": "1.2",
 	"description": "FirePHP extension for Google Chrome",
 	"browser_action":
 	{
@@ -12,7 +12,8 @@
 		"16": "i/FirePHP_16.png",
 		"24": "i/FirePHP_24.png",
 		"32": "i/FirePHP_32.png",
-		"48": "i/FirePHP_48.png"
+		"48": "i/FirePHP_48.png",
+		"128": "i/FirePHP_128.png"
 	},
 	"background_page": "background.html",
 	"permissions":
