@@ -45,6 +45,7 @@ function getNotificationURL(item)
 
 chrome.browserAction.onClicked.addListener(function(tab)
 {
+	chrome.browserAction.setBadgeText({'text': ''});
 	isPoweredOn = !isPoweredOn;
 	if (isPoweredOn)
 	{
