@@ -71,7 +71,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab)
 		{
 			var xhr = new XMLHttpRequest();
 			xhr.open("HEAD", tab.url, true);
-			xhr.setRequestHeader("X-FirePHP", "0.4");
+			xhr.setRequestHeader("X-FirePHP", "0.4.4");
+			xhr.setRequestHeader("X-FirePHP-Version", "0.4.4");
 			xhr.send();
 			xhr.onreadystatechange = function()
 			{
@@ -104,10 +105,16 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab)
 									text += '</pre>';
 								}
 								headersWfText += "<div class='ico ico-"+type+"'>" + text + "</div>";
+								//console.log(text);
 							}
 							var notification = webkitNotifications.createHTMLNotification(getNotificationURL([tab.url, headersWfText]));
 							notification.show();
-							//setTimeout(function(){ notification.cancel() }, 10000);
+							//setTimeout(function(){ notification.cancel() }, 7000);
+							//console.log(text);
+							//chrome.extension.getBackgroundPage().BackGroundManager.writeToConsole(someText);
+							//chrome.windows.getCurrent().console.log('iok');
+							//tab.console.log('iok');
+							//chrome.extension.getBackgroundPage().console.log('iok');
 						}
 						else 
 						{
