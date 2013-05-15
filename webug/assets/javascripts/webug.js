@@ -87,11 +87,31 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			1: "TEST"
 			*/
 			var message = messages[i]
+			  , label = message[0]['Label']
 			  , text = "JSON.parse('" + (JSON.stringify(message[1])).replace(/'/g, "\\'") + "')"
 			  , type = message[0]['Type']
 			;
+			if (label)
+			{
+				if (typeof(label) !== "String")
+				{
+					label = "JSON.parse('" + (JSON.stringify(label)).replace(/'/g, "\\'") + "')"
+				}
+				else
+				{
+					label = "'" + label.replace(/'/g, "\\'") + "'";
+				}
+			}
 			switch (type)
 			{
+				case 'GROUP_START':
+					chrome.tabs.executeScript(details.tabId, { code: "console.group("+label+");" });
+				break;
+
+				case 'GROUP_END':
+					chrome.tabs.executeScript(details.tabId, { code: "console.groupEnd();" });
+				break;
+
 				case 'WARN':
 					chrome.tabs.executeScript(details.tabId, { code: "console.warn("+text+");" });
 				break;
