@@ -23,9 +23,14 @@ function escapeQuotes(str)
 	return str.replace(/'/g, "\\'");
 }
 
-function logToTab(tabId, type, message)
+function logToTab(tabId, type, message, label)
 {
-	chrome.tabs.executeScript(tabId, { runAt: "document_start", code: "console."+type+"("+message+");" });
+	var data = message;
+	if (label)
+	{
+		data = label + ", " + message;
+	}
+	chrome.tabs.executeScript(tabId, { runAt: "document_start", code: "console." + type + "(" + data + ");" });
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -92,13 +97,13 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			;
 			if (label)
 			{
-				if (typeof(label) !== "String")
+				if (typeof(label) !== "string")
 				{
 					label = "JSON.parse('" + escapeQuotes(JSON.stringify(label)) + "')"
 				}
 				else
 				{
-					label = "'" + escapeQuotes(label) + "'";
+					label = "'" + escapeQuotes(label) + ":'";
 				}
 			}
 			switch (type)
@@ -112,23 +117,23 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 				break;
 
 				case 'WARN':
-					logToTab(details.tabId, "warn", text);
+					logToTab(details.tabId, "warn", text, label);
 				break;
 
 				case 'ERROR':
-					logToTab(details.tabId, "error", text);
+					logToTab(details.tabId, "error", text, label);
 				break;
 
 				case 'INFO':
-					logToTab(details.tabId, "info", text);
+					logToTab(details.tabId, "info", text, label);
 				break;
 
 				case 'DEBUG':
-					logToTab(details.tabId, "debug", text);
+					logToTab(details.tabId, "debug", text, label);
 				break;
 
 				default:
-					logToTab(details.tabId, "log", text);
+					logToTab(details.tabId, "log", text, label);
 			}
 		}
 	}
