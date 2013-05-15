@@ -7,27 +7,25 @@ function processWfHeaders(headers)
 	{
 		if (headers.hasOwnProperty(i))
 		{
-			var isWf = headers[i]["name"].match(/^X-Wf-1-(\d+)-1-(\d+)/i);
-			if (isWf)
+			var wf_header = headers[i]["name"].match(/^X-Wf-1-(\d+)-1-(\d+)/i);
+			if (wf_header)
 			{
 				var m = headers[i]["value"].match(/^(\d+)\|(.*)\|/i);
 				messages.push(jQuery.parseJSON(m[2]))
 			}
-			/*
-			var m = headers[i]["name"].match(/^X-Wf-1-(\d+)-1-(\d+): (\d+)\|(.*)\|/i);
-			if (m)
-			{
-				// m:
-				// 1 - группа
-				// 2 - id в группе
-				// 3 - длинна данных
-				// 4 - данные
-				headersWf.push([m[1], m[2], m[3], eval(m[4])]);
-			}
-			*/
 		}
 	}
 	return messages;
+}
+
+function escapeQuotes(str)
+{
+	return str.replace(/'/g, "\\'");
+}
+
+function logToTab(tabId, type, message)
+{
+	chrome.tabs.executeScript(tabId, { runAt: "document_start", code: "console."+type+"("+message+");" });
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -80,6 +78,7 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 		if (messages.hasOwnProperty(i))
 		{
 			/*
+			Message example:
 			0: Object
 				File: "/Users/admin/Sites/polygon/webug.php"
 				Line: "6"
@@ -88,51 +87,52 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			*/
 			var message = messages[i]
 			  , label = message[0]['Label']
-			  , text = "JSON.parse('" + (JSON.stringify(message[1])).replace(/'/g, "\\'") + "')"
+			  , text = "JSON.parse('" + escapeQuotes(JSON.stringify(message[1])) + "')"
 			  , type = message[0]['Type']
 			;
 			if (label)
 			{
 				if (typeof(label) !== "String")
 				{
-					label = "JSON.parse('" + (JSON.stringify(label)).replace(/'/g, "\\'") + "')"
+					label = "JSON.parse('" + escapeQuotes(JSON.stringify(label)) + "')"
 				}
 				else
 				{
-					label = "'" + label.replace(/'/g, "\\'") + "'";
+					label = "'" + escapeQuotes(label) + "'";
 				}
 			}
 			switch (type)
 			{
 				case 'GROUP_START':
-					chrome.tabs.executeScript(details.tabId, { code: "console.group("+label+");" });
+					logToTab(details.tabId, "group", label);
 				break;
 
 				case 'GROUP_END':
-					chrome.tabs.executeScript(details.tabId, { code: "console.groupEnd();" });
+					logToTab(details.tabId, "groupEnd", "");
 				break;
 
 				case 'WARN':
-					chrome.tabs.executeScript(details.tabId, { code: "console.warn("+text+");" });
+					logToTab(details.tabId, "warn", text);
 				break;
 
 				case 'ERROR':
-					chrome.tabs.executeScript(details.tabId, { code: "console.error("+text+");" });
+					logToTab(details.tabId, "error", text);
 				break;
 
 				case 'INFO':
-					chrome.tabs.executeScript(details.tabId, { code: "console.info("+text+");" });
+					logToTab(details.tabId, "info", text);
 				break;
 
 				case 'DEBUG':
-					chrome.tabs.executeScript(details.tabId, { code: "console.debug("+text+");" });
+					logToTab(details.tabId, "debug", text);
 				break;
 
 				default:
-					chrome.tabs.executeScript(details.tabId, { code: "console.log("+text+");" });
+					logToTab(details.tabId, "log", text);
 			}
 		}
 	}
+	return {};
 },
 {
 	urls: ["<all_urls>"],
