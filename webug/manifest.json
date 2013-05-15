@@ -1,0 +1,31 @@
+{
+	"manifest_version": 2,
+
+	"name": "Webug",
+	"description": "FirePHP extension for Google Chrome",
+	"version": "1.2.3",
+
+	"minimum_chrome_version": "17",
+
+	"browser_action":
+	{
+		"default_title": "",
+		"default_icon": "assets/images/FirePHP_19.png"
+	},
+	"icons":
+	{
+		"16": "assets/images/FirePHP_16.png",
+		"24": "assets/images/FirePHP_24.png",
+		"32": "assets/images/FirePHP_32.png",
+		"48": "assets/images/FirePHP_48.png",
+		"128": "assets/images/FirePHP_128.png"
+	},
+	"background":
+	{
+		"scripts": ["vendor/assets/javascripts/jquery-1.9.1.min.js", "assets/javascripts/webug.js"]
+	},
+	"permissions":
+	[
+		"webRequest", "webRequestBlocking", "<all_urls>"
+	]
+}
