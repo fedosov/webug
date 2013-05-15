@@ -3,6 +3,8 @@ webug
 
 PHP debugging tool for Google Chrome (initially port of `FirePHP`)
 
+![Webug Output Screenshot](http://i.imgur.com/taXPTOs.png)
+
 [Webug on Google Chrome Extensions](https://chrome.google.com/webstore/detail/webug/cjbeipenlpoeifpkjhgakejmikdhlhcj)
 
 
