@@ -1,7 +1,10 @@
 body {
-	font: 11px "Menlo", "Courier", monospace;
 	margin: 0;
 	padding: 1px 2px;
+}
+
+body, pre {
+	font: 11px "Menlo", "Courier", monospace;
 }
 
 .entries {
@@ -15,6 +18,11 @@ body {
 		overflow: hidden;
 		padding: 2px 0 1px;
 	}
+
+		.entries__item > pre {
+			padding: 1px 0 2px;
+			margin: 0;
+		}
 
 	.entry__message {
 		float: left;
