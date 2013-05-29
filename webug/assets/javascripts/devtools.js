@@ -9,15 +9,15 @@ chrome.devtools.panels.create("Webug", "assets/images/devtools-panel.png", "pane
 	var _window;
 
 	chrome.devtools.network.addRequestHeaders(
-		{
-			"X-FirePHP": "0.4.4",
-			"X-FirePHP-Version": "0.4.4"
-		});
+	{
+		"X-FirePHP": "0.4.4",
+		"X-FirePHP-Version": "0.4.4"
+	});
 
 	var port = chrome.extension.connect(
-		{
-			name: "webug.connection"
-		});
+	{
+		name: "webug.connection"
+	});
 
 	var buttonClear = panel.createStatusBarButton("assets/images/clear.png", "Clear Webug log.");
 	buttonClear.onClicked.addListener(function()
@@ -31,19 +31,32 @@ chrome.devtools.panels.create("Webug", "assets/images/devtools-panel.png", "pane
 		port.postMessage({ "type": "webug.headers", "headers": request.response.headers });
 	});
 
+	var tabId = chrome.devtools.inspectedWindow.tabId;
+
 	// Output messages
-	port.onMessage.addListener(function(messages)
+	port.onMessage.addListener(function(data)
 	{
-		if (messages.length === 0)
+		if (data["type"] === "webug.messages")
 		{
-			return;
-		}
-		for (var i = 0; i < messages.length; i++)
-		{
-			if (messages.hasOwnProperty(i))
+			var messages = data["messages"];
+			if (messages.length === 0)
 			{
-				var message = messages[i];
-				_window.log(message);
+				return;
+			}
+			for (var i = 0; i < messages.length; i++)
+			{
+				if (messages.hasOwnProperty(i))
+				{
+					var message = messages[i];
+					_window.log(message);
+				}
+			}
+		}
+		else if (data["type"] === "webug.tab.updated")
+		{
+			if (data["tabId"] === tabId && data["changeInfo"]["status"] === "loading")
+			{
+				_window.clearLog();
 			}
 		}
 	});

@@ -31,9 +31,14 @@ chrome.extension.onConnect.addListener(function(port)
 		if (message.hasOwnProperty("type") && message["type"] === "webug.headers")
 		{
 			var messages = processWfHeaders(message["headers"]);
-			port.postMessage(messages);
+			port.postMessage({ "type": "webug.messages", "messages": messages });
 		}
 	});
+
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab)
+	{
+		port.postMessage({ "type": "webug.tab.updated", "tabId": tabId, "changeInfo": changeInfo, "tab": tab });
+	})
 });
 
 function logToTab(tabId, type, message, label)
