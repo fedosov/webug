@@ -12,6 +12,7 @@
 		"default_title": "",
 		"default_icon": "assets/images/FirePHP_19.png"
 	},
+	"devtools_page": "devtools.html",
 	"icons":
 	{
 		"16": "assets/images/FirePHP_16.png",
