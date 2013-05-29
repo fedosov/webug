@@ -9,14 +9,20 @@ chrome.devtools.panels.create("Webug", "assets/images/devtools-panel.png", "pane
 	var _window;
 
 	chrome.devtools.network.addRequestHeaders(
-	{
-		"X-FirePHP": "0.4.4",
-		"X-FirePHP-Version": "0.4.4"
-	});
+		{
+			"X-FirePHP": "0.4.4",
+			"X-FirePHP-Version": "0.4.4"
+		});
 
 	var port = chrome.extension.connect(
+		{
+			name: "webug.connection"
+		});
+
+	var buttonClear = panel.createStatusBarButton("assets/images/clear.png", "Clear Webug log.");
+	buttonClear.onClicked.addListener(function()
 	{
-		name: "webug.connection"
+		_window.clearLog();
 	});
 
 	// Send headers to background script

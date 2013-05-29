@@ -39,3 +39,9 @@ function log(item)
 
 	entries.appendChild(entry);
 }
+
+function clearLog()
+{
+	var entries = document.getElementById("entries");
+	entries.innerHTML = "";
+}
