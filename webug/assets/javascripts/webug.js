@@ -18,19 +18,9 @@ function processWfHeaders(headers)
 	return messages;
 }
 
-function escapeQuotes(str)
-{
-	return str.replace(/'/g, "\\'");
-}
-
 function logToTab(tabId, type, message, label)
 {
-	var data = message;
-	if (label)
-	{
-		data = label + ", " + message;
-	}
-	chrome.tabs.executeScript(tabId, { runAt: "document_start", code: "console." + type + "(" + data + ");" });
+	chrome.tabs.sendMessage(tabId, { type: "webug.log", log_type: type, message: message, label: label });
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -92,20 +82,9 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			*/
 			var message = messages[i]
 			  , label = message[0]['Label']
-			  , text = "JSON.parse('" + escapeQuotes(JSON.stringify(message[1])) + "')"
+			  , text = message[1]
 			  , type = message[0]['Type']
 			;
-			if (label)
-			{
-				if (typeof(label) !== "string")
-				{
-					label = "JSON.parse('" + escapeQuotes(JSON.stringify(label)) + "')"
-				}
-				else
-				{
-					label = "'" + escapeQuotes(label) + ":'";
-				}
-			}
 			switch (type)
 			{
 				case 'GROUP_START':

@@ -3,7 +3,7 @@
 
 	"name": "Webug",
 	"description": "FirePHP extension for Google Chrome",
-	"version": "1.2.6",
+	"version": "1.2.7",
 
 	"minimum_chrome_version": "17",
 
@@ -24,6 +24,14 @@
 	{
 		"scripts": ["vendor/assets/javascripts/jquery-1.9.1.min.js", "assets/javascripts/webug.js"]
 	},
+	"content_scripts":
+	[
+		{
+			"matches" : ["<all_urls>"],
+			"js" : ["assets/javascripts/logging.js"],
+			"run_at": "document_start"
+		}
+	],
 	"permissions":
 	[
 		"webRequest", "webRequestBlocking", "<all_urls>"
