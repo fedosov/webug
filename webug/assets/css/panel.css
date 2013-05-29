@@ -1,0 +1,35 @@
+body {
+	font: 12px "Consolas", monospace;
+	margin: 0;
+	padding: 1px 2px;
+}
+
+.entries {
+	list-style: none;
+	margin: 0 10px 0 20px;
+	padding: 0;
+}
+
+	.entries__item {
+		border-bottom: 1px solid #eee;
+		overflow: hidden;
+		padding: 2px 0 1px;
+	}
+
+	.entry__message {
+		float: left;
+	}
+
+	.entry__source {
+		color: #777;
+		float: right;
+	}
+
+	.entry_type__WARN {
+		color: #dd6600;
+	}
+
+	.entry_type__ERROR {
+		color: #bb0000;
+	}
+

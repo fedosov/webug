@@ -1,3 +1,9 @@
+/**
+ * Webug
+ * Author: Fedosov Mikhail, 2010-2013
+ * URL:    https://github.com/fedosov/webug/
+ */
+
 var isPoweredOn = true;
 
 function processWfHeaders(headers)
@@ -17,6 +23,18 @@ function processWfHeaders(headers)
 	}
 	return messages;
 }
+
+chrome.extension.onConnect.addListener(function(port)
+{
+	port.onMessage.addListener(function(message)
+	{
+		if (message.hasOwnProperty("type") && message["type"] === "webug.headers")
+		{
+			var messages = processWfHeaders(message["headers"]);
+			port.postMessage(messages);
+		}
+	});
+});
 
 function logToTab(tabId, type, message, label)
 {
