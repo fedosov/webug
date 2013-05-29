@@ -6,15 +6,8 @@
 
 function log(item)
 {
-	/*
-	document.body.appendChild(document.createTextNode(item[0]["File"]));
-	document.body.appendChild(document.createTextNode(item[0]["Line"]));
-	document.body.appendChild(document.createTextNode(item[0]["Type"]));
-	document.body.appendChild(document.createTextNode(item[1]));
-	*/
-	var entries = document.getElementById("entries");
-	var entry = document.createElement("li");
-	entry.className = "entries__item entry_type__" + item[0]["Type"];
+	var entries = $("#entries");
+	var entry = $("<li class='entries__item'></li>").addClass("entry_type__" + item[0]["Type"]);
 
 	/*
 	LOG: "log",
@@ -27,21 +20,13 @@ function log(item)
 	GROUP_END: "groupEnd"
 	*/
 
-	var entry__message = document.createElement("div");
-	entry__message.className = "entry__message";
-	entry__message.innerHTML = item[1];
-	entry.appendChild(entry__message);
+	entry.append($("<div class='entry__message'></div>").text(item[1]));
+	entry.append($("<div class='entry__source'></div>").html(item[0]["File"] + ":<strong>" + item[0]["Line"] + "</strong>"));
 
-	var entry__source = document.createElement("div");
-	entry__source.className = "entry__source";
-	entry__source.innerHTML = item[0]["File"] + ":<strong>" + item[0]["Line"] + "</strong>";
-	entry.appendChild(entry__source);
-
-	entries.appendChild(entry);
+	entries.append(entry);
 }
 
 function clearLog()
 {
-	var entries = document.getElementById("entries");
-	entries.innerHTML = "";
+	$("#entries").html("");
 }
