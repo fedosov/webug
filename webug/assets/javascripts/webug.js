@@ -18,9 +18,9 @@ function processWfHeaders(headers)
 	return messages;
 }
 
-function logToTab(tabId, type, message, label)
+function logToTab(tabId, meta, type, message, label)
 {
-	chrome.tabs.sendMessage(tabId, { type: "webug.log", log_type: type, message: message, label: label });
+	chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label });
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -88,31 +88,31 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			switch (type)
 			{
 				case 'GROUP_START':
-					logToTab(details.tabId, "group", label);
+					logToTab(details.tabId, message[0], "group", label);
 				break;
 
 				case 'GROUP_END':
-					logToTab(details.tabId, "groupEnd", "");
+					logToTab(details.tabId, message[0], "groupEnd", "");
 				break;
 
 				case 'WARN':
-					logToTab(details.tabId, "warn", text, label);
+					logToTab(details.tabId, message[0], "warn", text, label);
 				break;
 
 				case 'ERROR':
-					logToTab(details.tabId, "error", text, label);
+					logToTab(details.tabId, message[0], "error", text, label);
 				break;
 
 				case 'INFO':
-					logToTab(details.tabId, "info", text, label);
+					logToTab(details.tabId, message[0], "info", text, label);
 				break;
 
 				case 'DEBUG':
-					logToTab(details.tabId, "debug", text, label);
+					logToTab(details.tabId, message[0], "debug", text, label);
 				break;
 
 				default:
-					logToTab(details.tabId, "log", text, label);
+					logToTab(details.tabId, message[0], "log", text, label);
 			}
 		}
 	}

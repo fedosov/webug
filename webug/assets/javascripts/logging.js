@@ -11,6 +11,10 @@ chrome.runtime.onMessage.addListener(function(message, sender)
 		{
 			args.push(message.message);
 		}
+		if (["group", "groupEnd"].indexOf(message.log_type) === -1)
+		{
+			console.log("%c" + message.meta.File + ":" + message.meta.Line, "color: #aaa;")
+		}
 		console[message.log_type].apply(console, args);
 	}
 });
