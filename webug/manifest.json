@@ -3,7 +3,7 @@
 
 	"name": "Webug",
 	"description": "FirePHP extension for Google Chrome",
-	"version": "1.2.8",
+	"version": "1.2.9",
 
 	"minimum_chrome_version": "17",
 
