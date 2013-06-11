@@ -20,7 +20,11 @@ function processWfHeaders(headers)
 
 function logToTab(tabId, meta, type, message, label)
 {
-	chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label });
+	setTimeout(function()
+	{
+		chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label });
+	}
+	, 0);
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -93,6 +97,10 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 
 				case 'GROUP_END':
 					logToTab(details.tabId, message[0], "groupEnd", "");
+				break;
+
+				case 'TABLE':
+					logToTab(details.tabId, message[0], "table", text, label);
 				break;
 
 				case 'WARN':
