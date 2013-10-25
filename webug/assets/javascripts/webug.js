@@ -3,6 +3,7 @@ var isPoweredOn = true;
 function processWfHeaders(headers)
 {
 	var messages = [];
+	var currentMessage = "";
 	for (var i in headers)
 	{
 		if (headers.hasOwnProperty(i))
@@ -10,10 +11,31 @@ function processWfHeaders(headers)
 			var wf_header = headers[i]["name"].match(/^X-Wf-1-(\d+)-1-(\d+)/i);
 			if (wf_header)
 			{
-				var m = headers[i]["value"].match(/^(\d+)\|(.*)\|/i);
-				messages.push(jQuery.parseJSON(m[2]))
+				var m = headers[i]["value"].match(/^(\d+)?\|(.*)\|/i);
+
+				currentMessage += m[2];
+
+				if (headers[i].value.charAt(headers[i].value.length - 1) === "\\")
+				{
+					// this is a partial message (or continuation)
+					continue;
+				}
+
+				try
+				{
+					messages.push(jQuery.parseJSON(currentMessage))
+				}
+				catch (e)
+				{
+					console.log('could not parse', currentMessage);
+				}
+
+				currentMessage = "";
 			}
 		}
+	}
+	if (currentMessage.length > 0 ) {
+		throw new Exception("Unfinished Wildfire header: " + currentMessage);
 	}
 	return messages;
 }
