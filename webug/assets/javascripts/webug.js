@@ -35,7 +35,7 @@ function processWfHeaders(headers)
 		}
 	}
 	if (currentMessage.length > 0 ) {
-		throw new Exception("Unfinished Wildfire header: " + currentMessage);
+		throw new Error("Unfinished Wildfire header: " + currentMessage);
 	}
 	return messages;
 }
