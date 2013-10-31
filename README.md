@@ -27,6 +27,10 @@ PHP debugging tool for Google Chrome ([FirePHP](http://www.firephp.org/) extensi
 
 ## Changelog
 
+**1.3.0**
+
+    Add: Support for partial wildfire headers (@weirdan)
+
 **1.2.9**
 
     Add: Table output
