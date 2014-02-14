@@ -79,6 +79,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details)
 		"name": "X-FirePHP-Version",
 		"value": "0.4.4"
 	});
+	details.requestHeaders.push(
+	{
+		"name": "X-Wf-Max-Combined-Size",
+		"value": "262144"
+	});
 	return { requestHeaders: details.requestHeaders };
 },
 {
