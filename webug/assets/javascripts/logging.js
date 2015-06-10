@@ -3,9 +3,12 @@ chrome.runtime.onMessage.addListener(function(message, sender)
 	if (message.type === "webug.log")
 	{
 		var args = [];
-		if (["group", "groupEnd"].indexOf(message.log_type) === -1)
+		if (
+			["group", "groupEnd"].indexOf(message.log_type) === -1 && 
+			message.meta.File.length > 0
+		)
 		{
-			console.log("%c" + message.meta.File + ":" + message.meta.Line, "color: #aaa;")
+			console.log("%c" + message.meta.File + ":" + (message.meta.Line :: '<unknown>'), "color: #aaa;")
 		}
 		if (message.log_type === "table")
 		{
