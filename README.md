@@ -27,6 +27,10 @@ PHP debugging tool for Google Chrome ([FirePHP](http://www.firephp.org/) extensi
 
 ## Changelog
 
+**1.3.2**
+
+    Fixed: Prevent empty log lines (@GodLesZ)
+
 **1.3.1**
 
     Add: Announce header size limitation (@weirdan)
