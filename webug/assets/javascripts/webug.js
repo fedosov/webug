@@ -8,10 +8,10 @@ function processWfHeaders(headers)
 	{
 		if (headers.hasOwnProperty(i))
 		{
-			var wf_header = headers[i]["name"].match(/^X-Wf-1-(\d+)-1-(\d+)/i);
+			var wf_header = headers[i].name.match(/^X-Wf-1-(\d+)-1-(\d+)/i);
 			if (wf_header)
 			{
-				var m = headers[i]["value"].match(/^(\d+)?\|(.*)\|/i);
+				var m = headers[i].value.match(/^(\d+)?\|(.*)\|/i);
 
 				currentMessage += m[2];
 
@@ -27,14 +27,15 @@ function processWfHeaders(headers)
 				}
 				catch (e)
 				{
-					console.log('could not parse', currentMessage);
+					console.log("could not parse", currentMessage);
 				}
 
 				currentMessage = "";
 			}
 		}
 	}
-	if (currentMessage.length > 0 ) {
+	if (currentMessage.length > 0 )
+	{
 		throw new Error("Unfinished Wildfire header: " + currentMessage);
 	}
 	return messages;
@@ -42,11 +43,22 @@ function processWfHeaders(headers)
 
 function logToTab(tabId, meta, type, message, label)
 {
-	setTimeout(function()
+	var timer, retries = 0;
+
+	function send()
 	{
-		chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label });
+		chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label }, function(resp)
+		{
+			if (resp || retries >= 3)
+			{
+				clearInterval(timer);
+			}
+			retries++;
+		});
 	}
-	, 0);
+
+	send();
+	timer = setInterval(send, 100);
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
@@ -112,9 +124,9 @@ chrome.webRequest.onHeadersReceived.addListener(function(details)
 			1: "TEST"
 			*/
 			var message = messages[i]
-			  , label = message[0]['Label']
+			  , label = message[0].Label
 			  , text = message[1]
-			  , type = message[0]['Type']
+			  , type = message[0].Type
 			;
 			switch (type)
 			{
