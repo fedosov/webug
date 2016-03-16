@@ -43,22 +43,20 @@ function processWfHeaders(headers)
 
 function logToTab(tabId, meta, type, message, label)
 {
-	var timer, retries = 0;
+	var retries = 3;
 
 	function send()
 	{
 		chrome.tabs.sendMessage(tabId, { type: "webug.log", meta: meta, log_type: type, message: message, label: label }, function(resp)
 		{
-			if (resp || retries >= 3)
+			if (!resp && chrome.runtime.lastError && retries-- > 0)
 			{
-				clearInterval(timer);
+				return send();
 			}
-			retries++;
 		});
 	}
 
 	send();
-	timer = setInterval(send, 100);
 }
 
 chrome.browserAction.onClicked.addListener(function(tab)
